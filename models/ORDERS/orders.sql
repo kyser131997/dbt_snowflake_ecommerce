@@ -1,26 +1,28 @@
--- models/stg_orders.sql
-
 {{
 
-    config (
+    config(
         materialized = 'table'
     )
+
 }}
 
 WITH source AS (
+
     SELECT
-        order_id::INT AS order_id,
-        customer_id::INT AS customer_id,
-        order_date::DATE AS order_date,
-        LOWER(status) AS status,
-        total_amount::NUMERIC(10,2) AS total_amount,
-        payment_method::STRING AS payment_method
-   
-    FROM 
-        {{ source('snowflake_source', 'orders') }}
+        COMMANDE_ID::INT              AS order_id,
+        CLIENT_ID::INT                AS customer_id,
+        DATE_COMMANDE::DATE           AS order_date,
+        LOWER(STATUT)                 AS status,
+        MONTANT_TOTAL::NUMERIC(10,2)  AS total_amount,
+        MODE_PAIEMENT::STRING         AS payment_method,
+        VILLE_LIVRAISON::STRING       AS delivery_city
+
+    FROM {{ source('snowflake_source', 'commandes') }}
+
 ),
 
 cleaned AS (
+
     SELECT
         order_id,
         customer_id,
@@ -28,9 +30,11 @@ cleaned AS (
         EXTRACT(YEAR FROM order_date) AS order_year,
         status,
         total_amount,
-        payment_method
+        payment_method,
+        delivery_city
     FROM source
-    WHERE status != 'cancelled'
+    WHERE status != 'annulee'
+
 )
 
 SELECT * FROM cleaned
