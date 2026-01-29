@@ -1,55 +1,18 @@
 version: 2
 
+sources:
+  - name: snowflake_source
+    database: dbt_cloud
+    schema: raw_schema
+    tables:
+      - name: orders
+
 models:
-  - name: stg_commandes
-    description: "Table de staging des commandes issues de Snowflake, nettoyées et standardisées"
+  - name: orders
+    description: "this is orders model"
     columns:
-
-      - name: order_id
-        description: "Identifiant unique de la commande"
-        tests:
-          - not_null
-          - unique
-
-      - name: customer_id
-        description: "Identifiant du client ayant passé la commande"
-        tests:
-          - not_null
-
-      - name: order_date
-        description: "Date de la commande"
-        tests:
-          - not_null
-
-      - name: order_year
-        description: "Année de la commande (dérivée de order_date)"
-        tests:
-          - not_null
-
-      - name: status
-        description: "Statut de la commande"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['en_cours', 'expediee', 'livree']
-
-      - name: total_amount
-        description: "Montant total de la commande en euros"
-        tests:
-          - not_null
-
-      - name: payment_method
-        description: "Moyen de paiement utilisé"
-        tests:
-          - not_null
-          - accepted_values:
-              values:
-                - carte_bancaire
-                - paypal
-                - virement
-                - apple_pay
-
-      - name: delivery_city
-        description: "Ville de livraison de la commande"
-        tests:
-          - not_null
+        - name: order_id
+          description: "The primary key for this table"
+          tests:
+              - unique
+              - not_null
